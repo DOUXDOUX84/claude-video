@@ -70,7 +70,9 @@ def test_timestamps_with_transcript_detail_is_cue_only(cut_clip: Path):
 
 
 def _frame_lines(out: str) -> int:
-    return sum(1 for line in out.splitlines() if "/frames/frame_" in line and "(t=" in line)
+    # Frame paths use the platform separator (backslash on Windows).
+    marker = os.path.join("frames", "frame_")
+    return sum(1 for line in out.splitlines() if marker in line and "(t=" in line)
 
 
 def test_dedup_collapses_static_by_default(static_clip: Path):

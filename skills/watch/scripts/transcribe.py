@@ -90,6 +90,9 @@ def format_transcript(segments: list[dict]) -> str:
 
 
 if __name__ == "__main__":
+    from config import use_utf8_stdio
+
+    use_utf8_stdio()
     if len(sys.argv) < 2:
         print("usage: transcribe.py <vtt-path>", file=sys.stderr)
         raise SystemExit(2)

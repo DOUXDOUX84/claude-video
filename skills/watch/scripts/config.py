@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+import sys
 from pathlib import Path
 
 
@@ -72,3 +73,12 @@ def frame_cap(detail: str) -> int | None:
     if detail == "transcript":
         return None
     return 100
+
+
+def use_utf8_stdio() -> None:
+    # On Windows a piped stdout/stderr defaults to the ANSI code page (cp1252),
+    # which cannot encode the report's "→" or arbitrary title/caption text, so
+    # print() raised UnicodeEncodeError mid-report. Force UTF-8 on every OS.
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, "reconfigure"):
+            stream.reconfigure(encoding="utf-8", errors="replace")

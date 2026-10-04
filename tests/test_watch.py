@@ -16,7 +16,7 @@ def _run(clip: Path, *args: str, env_extra: dict | None = None) -> str:
         env.update(env_extra)
     proc = subprocess.run(
         [sys.executable, str(WATCH), str(clip), "--no-whisper", *args],
-        capture_output=True, text=True, env=env,
+        capture_output=True, encoding="utf-8", errors="replace", env=env,
     )
     assert proc.returncode == 0, proc.stderr
     return proc.stdout
@@ -67,6 +67,13 @@ def test_timestamps_with_transcript_detail_is_cue_only(cut_clip: Path):
     assert "reason=transcript-cue" in out
     assert "reason=scene-change" not in out
     assert "reason=keyframe" not in out
+
+
+def test_focus_report_survives_cp1252_stdio(cut_clip: Path):
+    # A Windows pipe defaults to cp1252, which cannot encode the focus range's "→".
+    out = _run(cut_clip, "--start", "0", "--end", "1", env_extra={"PYTHONIOENCODING": "cp1252"})
+    assert "**Focus range:** 00:00 → 00:01" in out
+    assert "## Frames" in out
 
 
 def _frame_lines(out: str) -> int:

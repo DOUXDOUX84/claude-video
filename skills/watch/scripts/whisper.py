@@ -466,6 +466,9 @@ def transcribe_video(
 
 
 if __name__ == "__main__":
+    from config import use_utf8_stdio
+
+    use_utf8_stdio()
     if len(sys.argv) < 2:
         print("usage: whisper.py <video-path> [<audio-out.mp3>] [--backend groq|openai]", file=sys.stderr)
         raise SystemExit(2)
